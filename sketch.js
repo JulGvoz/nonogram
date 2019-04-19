@@ -11,8 +11,10 @@ function mousePressed() {
   }
 }
 
-var beginnerSettings;
-
+var difficultySettings;
+var standardParameters;
+var actualNonogram;
+var displayedNonogram;
 /*
  * let parameterList = ["squareSize",
 		 "gridX", "gridY",
@@ -24,27 +26,38 @@ var beginnerSettings;
 		 "textSize", "textColor"]
      * */
 
-var standardParameters;
+function newNonogram() {
+  actualNonogram = new Nonogram(difficultySettings.width, difficultySettings.height);
+  displayedNonogram = new Nonogram(difficultySettings.width, difficultySettings.height);
+  actualNonogram.generate(difficultySettings.fillRatio);
+  displayedNonogram.setParameters(standardParameters);
+  actualNonogram.setParameters(standardParameters);
+}
 
 function setup() {
+  createCanvas(1000, 500);
+  
+  const BLACK = color(0,0,0);
+  const WHITE = color(255,255,255);
+  
   standardParameters = {
     squareSize: 50,
     gridX: 100, gridY: 100,
     textHorizontalX: 100, textHorizontalY: 0,
     textVerticalX: 0, textVerticalY: 100,
     textHorizontalOddOffset: 25,
-    filledColor: color(0,0,0), emptyColor: color(255,255,255),
-    strokeColor: color(0,0,0), strokeWeight: 1,
-    textSize: 12, textColor: color(0,0,0)
+    filledColor: BLACK, emptyColor: WHITE,
+    strokeColor: BLACK, strokeWeight: 1,
+    textSize: 12, textColor: BLACK
   };
-  beginnerSettings = {
+  difficultySettings = {
     width: 5,
     height: 5,
     fillRatio: 0.7
   };
-  createCanvas(1000, 500);
+  newNonogram();
 }
 
 function draw() {
-  
+  actualNonogram.drawGrid();
 }

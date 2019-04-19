@@ -40,10 +40,8 @@ class Nonogram {
 		 "strokeColor", "strokeWeight",
 		 "textSize", "textColor"]
 		
-		for (let p in parameterList) {
-			if (parameters.hasOwnProperty(p)) {
-				this[p] = parameters[p];
-			}
+		for (var p in parameters) {
+			this[p] = parameters[p];
 		}
 	}
 	
@@ -60,7 +58,7 @@ class Nonogram {
 				} else {
 					fill(this.emptyColor);
 				}
-				rect(this.gridX + j*squareSize, this.gridY + i*squareSize, squareSize, squareSize);
+				rect(this.gridX + j*this.squareSize, this.gridY + i*this.squareSize, this.squareSize, this.squareSize);
 			}
 		}
 	}
