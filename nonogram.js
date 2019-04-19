@@ -113,4 +113,11 @@ class Nonogram {
 			text(this.verticalHints, this.textVerticalX, this.textVerticalY + i*this.squareSize);
 		}
 	}
+	
+	getSelectedCell(x, y) {
+		let rtrnX = (x - this.width)/this.squareSize;
+		let rtrnY = (y - this.height)/this.squareSize;
+		
+		return {x: rtrnX, y: rtrnY};
+	}
 }
