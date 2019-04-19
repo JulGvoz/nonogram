@@ -68,7 +68,7 @@ class Nonogram {
 	/*
 	 * Calculates Nonogram hints, given row/column and verticality(bool), as in whether it is vertical or horizontal row or column.
 	 * */
-	calculateHints(coord, vert) {
+	getHints(coord, vert) {
 		let hints = [];
 		let currentCount = 0;
 		let size = vert ? this.height : this.width;
@@ -91,10 +91,26 @@ class Nonogram {
 	}
 	
 	calculateHintsHorizontal(row) {
-		return calculateHints(row, false);
+		this.horizontalHints = getHints(row, false);
 	}
 	
 	calculateHintsVertical(column) {
-		return calculateHints(column, true);
+		this.verticalHints = getHints(column, true);
+	}
+	
+	drawTextHorizontal() {
+		for (let i = 0; i < this.width; i++) {
+			textSize(this.textSize);
+			fill(this.textColor);
+			text(this.horizontalHints, this.textHorizontalX + i*this.squareSize, this.textHorizontalY + (i%2)*this.textHorizontalOddOffset);
+		}
+	}
+	
+	drawTextVertical() {
+		for (let i = 0; i < this.height; i++) {
+			textSize(this.textSize);
+			fill(this.textColor);
+			text(this.verticalHints, this.textVerticalX, this.textVerticalY + i*this.squareSize);
+		}
 	}
 }
