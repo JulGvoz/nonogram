@@ -11,7 +11,7 @@ class Nonogram {
 		for (let i = 0; i < this.height; i++) {
 			this.nonogram.push([]);
 			for (let j = 0; j < this.width; j++) {
-				this.nonogram[i].push(false);
+				this.nonogram[i].push("empty");
 			}
 		} 
 	}
@@ -22,7 +22,9 @@ class Nonogram {
 		this.fillRatio = fillRatio;
 		for (let i = 0; i < this.height; i++) {
 			for (let j = 0; j < this.width; j++) {
-				this.nonogram[i][j] = random() < this.fillRatio;
+				if (random() < this.fillRatio) {
+					this.nonogram[i][j] = "filled";
+				}
 			}
 		} 
 	}
@@ -31,6 +33,7 @@ class Nonogram {
 	 * Sets parameters of the Nonogram, given an object, where keys are actual parameters, and values are the parameter values.
 	 * */
 	setParameters(parameters) {
+		/*
 		let parameterList = ["squareSize",
 		 "gridX", "gridY",
 		 "textHorizontalX", "textHorizontalY",
@@ -39,7 +42,7 @@ class Nonogram {
 		 "filledColor", "emptyColor", 
 		 "strokeColor", "strokeWeight",
 		 "textSize", "textColor"]
-		
+		*/
 		for (var p in parameters) {
 			this[p] = parameters[p];
 		}
@@ -53,11 +56,8 @@ class Nonogram {
 			for (let j = 0; j < this.width; j++) {
 				stroke(this.strokeColor);
 				strokeWeight(this.strokeWeight);
-				if (this.nonogram[i][j]) {
-					fill(this.filledColor);
-				} else {
-					fill(this.emptyColor);
-				}
+				let parameterName = this.nonogram[i][j] + "Color";
+				fill(this[parameterName]);
 				rect(this.gridX + j*this.squareSize, this.gridY + i*this.squareSize, this.squareSize, this.squareSize);
 			}
 		}
