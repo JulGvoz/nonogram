@@ -64,4 +64,37 @@ class Nonogram {
 			}
 		}
 	}
+	
+	/*
+	 * Calculates Nonogram hints, given row/column and verticality(bool), as in whether it is vertical or horizontal row or column.
+	 * */
+	calculateHints(coord, vert) {
+		let hints = [];
+		let currentCount = 0;
+		let size = vert ? this.height : this.width;
+		for (let i = 0; i < size; i++) {
+			let checked = vert ? this.nonogram[i][coord] : this.nonogram[coord][i];
+			
+			if (checked) {
+				currentCount++;
+			} else {
+				if (currentCount != 0) {
+					hints.push(currentCount);
+				}
+				currentCount = 0;
+			}
+		}
+		if (currentCount != 0) {
+			hints.push(currentCount);
+		}
+		return hints;
+	}
+	
+	calculateHintsHorizontal(row) {
+		return calculateHints(row, false);
+	}
+	
+	calculateHintsVertical(column) {
+		return calculateHints(column, true);
+	}
 }
