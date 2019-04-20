@@ -19,14 +19,19 @@ class Nonogram {
 	 * Generates a random Nonogram, given a fillRatio, defaults to 0.5
 	 * */
 	generate(fillRatio=0.5) {
+		this.totalDots = 0;
 		this.fillRatio = fillRatio;
 		for (let i = 0; i < this.height; i++) {
 			for (let j = 0; j < this.width; j++) {
 				if (random() < this.fillRatio) {
 					this.nonogram[i][j] = "filled";
+					this.totalDots++;
 				}
 			}
 		} 
+		
+		this.scoreK1 = this.totalDots;
+		this.scoreK2 = 2*(this.width*this.height)-this.scoreK1;
 	}
 	
 	/*
@@ -133,5 +138,26 @@ class Nonogram {
 		let rtrnY = floor((y - this.gridY)/this.squareSize);
 		
 		return {x: rtrnX, y: rtrnY};
+	}
+	
+	checkVictory(that) {
+		let winState = "won";
+		if (this.width != that.width || this.height != that.height) {
+			winState = "wrongTarget";
+			return winState;
+		}
+		
+		for (let i = 0; i < this.height; i++) {
+			for (let j = 0; j < this.width; j++) {
+				if (this.nonogram[i][j] == "filled" && that.nonogram[i][j] != "filled") {
+					winState = "unfinished";
+				}
+				if (this.nonogram[i][j] == "empty" && that.nonogram[i][j] == "filled") {
+					winState = "mistaken";
+					return winState;
+				}
+			}
+		}
+		return winState;
 	}
 }
