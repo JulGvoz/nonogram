@@ -66,14 +66,14 @@ class Nonogram {
 	/*
 	 * Calculates Nonogram hints, given row/column and verticality(bool), as in whether it is vertical or horizontal row or column.
 	 * */
-	getHints(coord, vert) {
+	getHints(coord, horiz) {
 		let hints = [];
 		let currentCount = 0;
-		let size = vert ? this.height : this.width;
+		let size = horiz ? this.height : this.width;
 		for (let i = 0; i < size; i++) {
-			let checked = vert ? this.nonogram[i][coord] : this.nonogram[coord][i];
+			let checked = horiz ? this.nonogram[i][coord] : this.nonogram[coord][i];
 			
-			if (checked) {
+			if (checked == "filled") {
 				currentCount++;
 			} else {
 				if (currentCount != 0) {
@@ -88,33 +88,49 @@ class Nonogram {
 		return hints;
 	}
 	
-	calculateHintsHorizontal(row) {
-		this.horizontalHints = getHints(row, false);
+	calculateHintsHorizontal() {
+		this.horizontalHints = [];
+		for (let i = 0; i < this.width; i++) {
+			this.horizontalHints.push(this.getHints(i, true));
+		}
 	}
 	
-	calculateHintsVertical(column) {
-		this.verticalHints = getHints(column, true);
+	calculateHintsVertical() {
+		this.verticalHints = [];
+		for (let i = 0; i < this.height; i++) {
+			this.verticalHints.push(this.getHints(i, false));
+		}
 	}
 	
 	drawTextHorizontal() {
 		for (let i = 0; i < this.width; i++) {
 			textSize(this.textSize);
+			/*
+			fill(225,225,225);
+			rect(this.textHorizontalX + i*this.squareSize, this.textHorizontalY + (i%2)*this.textHorizontalOddOffset, 50, 50);
+			* */
 			fill(this.textColor);
-			text(this.horizontalHints, this.textHorizontalX + i*this.squareSize, this.textHorizontalY + (i%2)*this.textHorizontalOddOffset);
+			text(this.horizontalHints[i], this.textHorizontalX + i*this.squareSize, this.textHorizontalY + (i%2)*this.textHorizontalOddOffset);
+			
 		}
 	}
 	
 	drawTextVertical() {
 		for (let i = 0; i < this.height; i++) {
 			textSize(this.textSize);
+			/*
+			fill(225,225,225);
+			rect(this.textVerticalX, this.textVerticalY + i*this.squareSize, 50, 50);
+			* */
 			fill(this.textColor);
-			text(this.verticalHints, this.textVerticalX, this.textVerticalY + i*this.squareSize);
+			text(this.verticalHints[i], this.textVerticalX, this.textVerticalY + i*this.squareSize);
+			
 		}
 	}
 	
 	getSelectedCell(x, y) {
-		let rtrnX = (x - this.width)/this.squareSize;
-		let rtrnY = (y - this.height)/this.squareSize;
+		let rtrnX = floor((x - this.gridX)/this.squareSize);
+		let rtrnY = floor((y - this.gridY)/this.squareSize);
 		
 		return {x: rtrnX, y: rtrnY};
 	}
