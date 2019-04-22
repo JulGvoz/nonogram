@@ -1,4 +1,4 @@
-"use strict";
+//"use strict";
 
 window.oncontextmenu = function () { // Disable right-click
    return false;
@@ -13,6 +13,11 @@ var WHITE;
 var GRAY;
 var moves;
 var score;
+var lives = 1;
+var livesX = 0;
+var livesY;
+var livesSize = 50;
+var livesIcon = "\u2764";
 
 /*
  * let parameterList = ["squareSize",
@@ -26,6 +31,17 @@ var score;
      * */
 
 function newNonogram() {
+	difficultySettings.fillRatio-=0.1;
+	if (difficultySettings.fillRatio<0.5) {
+		lives++;
+		difficultySettings.fillRatio = 0.7;
+		if (random() >= 0.5) {
+			difficultySettings.width++
+		} else {
+			difficultySettings.height++;
+		}
+	}
+	
     actualNonogram = new Nonogram(difficultySettings.width, difficultySettings.height);
     displayedNonogram = new Nonogram(difficultySettings.width, difficultySettings.height);
     actualNonogram.generate(difficultySettings.fillRatio);
@@ -34,9 +50,11 @@ function newNonogram() {
     
 	actualNonogram.calculateHintsVertical();
 	actualNonogram.calculateHintsHorizontal();
+	
+	livesY = standardParameters.gridY+difficultySettings.height*standardParameters.squareSize;
 }
 
-function mousePressed() {
+function mouseClicked() {
 	moves++;
     let coords = displayedNonogram.getSelectedCell(mouseX, mouseY);
     if (mouseButton == LEFT) {
@@ -54,18 +72,12 @@ function mousePressed() {
 		} else if (localScore >= 0) {
 			score+=localScore;
 		}
-		difficultySettings.fillRatio-=0.1;
-		if (difficultySettings.fillRatio<0.5) {
-			difficultySettings.fillRatio = 0.7;
-			if (random() >= 0.5) {
-				difficultySettings.width++
-			} else {
-				difficultySettings.height++;
-			}
-		}
 		console.log(score, localScore, moves, actualNonogram.scoreK1, actualNonogram.scoreK2);
 		moves = 0;
 		newNonogram();
+	} else if (actualNonogram.checkVictory(displayedNonogram) == "mistaken") {
+		lives--;
+		mousePressed();
 	}
     //console.log(displayedNonogram);
     loop();
@@ -94,7 +106,7 @@ function setup() {
     difficultySettings = {
         width: 5,
         height: 5,
-        fillRatio: 0.7
+        fillRatio: 0.8
     };
     newNonogram();
     console.log(actualNonogram);
@@ -105,6 +117,14 @@ function draw() {
     displayedNonogram.drawGrid();
     actualNonogram.drawTextHorizontal();
     actualNonogram.drawTextVertical();
+    fill(BLACK);
+    textSize(livesSize);
+    let livesText = "";
+    for (let i = 0; i < lives; i++) {
+		livesText+=livesIcon;
+	}
+    text(livesText, livesX, livesY);
+    text(round(score), livesX, livesY+livesSize);
     /*
     for (let i = 0; i < actualNonogram.height; i++) {
 		for (let j = 0; j < actualNonogram.width; j++) {
