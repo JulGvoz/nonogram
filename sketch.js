@@ -54,7 +54,7 @@ function newNonogram() {
 	livesY = standardParameters.gridY+difficultySettings.height*standardParameters.squareSize;
 }
 
-function mouseClicked() {
+function mousePressed() {
 	moves++;
     let coords = displayedNonogram.getSelectedCell(mouseX, mouseY);
     if (mouseButton == LEFT) {
@@ -77,6 +77,9 @@ function mouseClicked() {
 		newNonogram();
 	} else if (actualNonogram.checkVictory(displayedNonogram) == "mistaken") {
 		lives--;
+		if (lives == 0) {
+			mousePressed = function() {};
+		}
 		mousePressed();
 	}
     //console.log(displayedNonogram);
@@ -106,7 +109,7 @@ function setup() {
     difficultySettings = {
         width: 5,
         height: 5,
-        fillRatio: 0.8
+        fillRatio: 0.75
     };
     newNonogram();
     console.log(actualNonogram);
@@ -123,8 +126,11 @@ function draw() {
     for (let i = 0; i < lives; i++) {
 		livesText+=livesIcon;
 	}
+	if (livesText == "") {
+		livesText = "Game over";
+	}
     text(livesText, livesX, livesY);
-    text(round(score), livesX, livesY+livesSize);
+    text("Score: " + round(score), livesX, livesY+livesSize);
     /*
     for (let i = 0; i < actualNonogram.height; i++) {
 		for (let j = 0; j < actualNonogram.width; j++) {
