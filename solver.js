@@ -26,7 +26,7 @@ function checkIfSolved(ng, hints) {
 		let ngHints = ng.getHints(i, true); // coord, horiz
 		//console.log(ngHints, hints.horizontal[i]);
 		if (!arraysEqual(ngHints, hints.horizontal[i])) {
-			return false;
+			return i;
 		}
 	}
 	
@@ -34,16 +34,34 @@ function checkIfSolved(ng, hints) {
 		let ngHints = ng.getHints(i, false); // coord, horiz
 		if (!arraysEqual(ngHints, hints.vertical[i])) {
 			//console.log(ngHints, hints.vertical[i]);
-			return false;
+			return ng.height+i;
 		}
 	}
-	return true;
+	return -1;
 }
 
-function solveNonogram(ng, hints, badSolutions=[]) {
-	if (checkIfSolved(ng, hints)) {
+var totalTries = 0;
+
+function solveNonogram(ng, hints, i=0, j=0) {
+    console.log(ng, i, j);
+	totalTries++;
+	if (totalTries >= 500) {
+        return false;
+	}
+	let badPlace = checkIfSolved(ng, hints);
+	if (badPlace == -1) {
 		return ng;
 	}
-	
-	
+    if (j >= ng.width) {
+        j = 0;
+        i++;
+        if (i >= ng.height) {
+            return false;
+        }
+    }
+    
+    let emptySolve = solveNonogram(ng, hints, i, j+1);
+    ng[i][j] = "filled";
+    let filledSolve = solveNonogram(ng, hints, i, j+1);
+    return emptySolve ? emptySolve : filledSolve;
 }
